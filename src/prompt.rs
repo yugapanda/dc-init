@@ -18,12 +18,14 @@ pub fn select_one(message: &str, images: Vec<String>, error_message: &str) -> St
 }
 
 pub fn input_with_retry(message: &str, error_message: &str) -> String {
-    match Input::new().with_prompt(message).interact_text() {
-        Ok(ver) => ver,
-        _ => {
-            println!("{}", &error_message);
-            input_with_retry(message, error_message)
-        }
+    if let Ok(version) = Input::new()
+        .with_prompt(message)
+        .interact_text()
+    {
+        version
+    } else {
+        println!("{}", &error_message);
+        input_with_retry(message, error_message)
     }
 }
 
