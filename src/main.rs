@@ -1,5 +1,6 @@
 use std::process::Command;
 mod prompt;
+mod dc;
 
 use prompt::*;
 use regex::Regex;
