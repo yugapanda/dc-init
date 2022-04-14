@@ -1,5 +1,4 @@
-use crate::{domain::{prompt::{HavePrompt}, dc::{IDockerComposePrompt, HaveDockerComposePrompt}}, infra::prompt::PromptDialoguer};
-
+use crate::{domain::{prompt::{HavePrompt, IDockerComposePrompt, HaveDockerComposePrompt}}, infra::prompt::PromptDialoguer};
 
 pub struct Composer {}
 

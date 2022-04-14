@@ -3,7 +3,7 @@ mod domain;
 mod infra;
 mod usecase;
 
-use domain::dc::DockerComposePrompt;
+use domain::prompt::DockerComposePrompt;
 use regex::Regex;
 use infra::prompt;
 use usecase::dc::Composer;
@@ -20,6 +20,6 @@ fn prompt() {
     let image_search_word = Composer::image_search_word();
     let images = Composer::get_docker_image_names(image_search_word);
     let select_image = Composer::select_image_name(images);
-    // let container_name = Composer::container_name();
+    let container_name = Composer::container_name();
 
 }
