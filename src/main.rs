@@ -1,11 +1,9 @@
-use std::process::Command;
 mod domain;
 mod infra;
 mod usecase;
 
-use domain::prompt::DockerComposePrompt;
-use regex::Regex;
-use infra::prompt;
+
+use domain::dc_prompt::DockerComposePrompt;
 use usecase::dc::Composer;
 
 fn main() {
