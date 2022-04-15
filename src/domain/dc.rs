@@ -12,11 +12,12 @@ pub struct DockerComposeService {
     pub image: String,
     pub name: Option<String>,
     pub restart: Option<String>,
-    pub privileged: bool,
+    pub privileged: Option<bool>,
     pub command: Option<String>,
     pub ports: Vec<Ports>,
     pub volumes: Vec<Volume>,
     pub environment: Vec<String>,
+    pub network: Vec<String>
 }
 
 impl DockerComposeService {

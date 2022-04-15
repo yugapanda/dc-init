@@ -2,17 +2,71 @@ use std::process::Command;
 
 use regex::Regex;
 
+use super::dc::DockerComposeService;
 use super::prompt::HavePrompt;
 use super::prompt::Prompt;
 
-
 pub trait DockerComposePrompt: HavePrompt {
+    fn make_service() -> DockerComposeService {
+        let image_search_word = Self::image_search_word();
+        let images = Self::get_docker_image_names(image_search_word);
+        let select_image = Self::select_image_name(images);
+        let container_name = Self::container_name();
+        let restart = Self::select_restart();
+        let privileged = Self::select_privileged();
+        let command = Self::input_command();
+
+        DockerComposeService {
+            image: select_image,
+            name: Some(container_name),
+            restart: Some(restart),
+            privileged: Some(privileged),
+            command: command,
+            ports: vec!(),
+            volumes: vec!(),
+            environment: vec!(),
+            network: vec!(),
+        }
+    }
+
     fn container_name() -> String {
         Self::Prompt::input_with_retry("Input Container Name", "Please Input Container Name")
     }
 
     fn select_image_name(images: Vec<String>) -> String {
         Self::Prompt::select_one("Select Base Image", images, "Please Select Base Image")
+    }
+
+    fn select_privileged() -> bool {
+        let is = Self::Prompt::select_one("Need privilege ?", vec!("true".to_string(), "false".to_string()), "Please Select Base Image");
+        is == "true"
+    }
+
+    fn input_command() -> Option<String> {
+        let command = Self::Prompt::input_with_retry_and_default(
+            "Input command",
+            "need input version",
+            "",
+        );
+
+        if command == "".to_string() {
+            None
+        } else {
+            Some(command)
+        }
+    }
+
+    fn select_restart() -> String {
+        Self::Prompt::select_one(
+            "Select Restart Way",
+            vec![
+                "no".to_string(),
+                "on-failure".to_string(),
+                "always".to_string(),
+                "unless-stopped".to_string(),
+            ],
+            "Please Select Base Image",
+        )
     }
 
     fn get_dc_version() -> String {
@@ -24,10 +78,7 @@ pub trait DockerComposePrompt: HavePrompt {
     }
 
     fn image_search_word() -> String {
-        Self::Prompt::input_with_retry(
-            "What word(s) do you search for?",
-            "please input message",
-        )
+        Self::Prompt::input_with_retry("What word(s) do you search for?", "please input some word")
     }
 
     fn get_container_number() -> usize {
@@ -78,7 +129,6 @@ pub trait DockerComposePrompt: HavePrompt {
             .collect::<Vec<String>>()
     }
 }
-
 
 pub trait HaveDockerComposePrompt {
     type DockerComposePrompt: DockerComposePrompt;
