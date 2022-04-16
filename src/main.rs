@@ -10,5 +10,5 @@ fn main() {
 }
 
 fn prompt() {
-    Composer::make_service();
+    Composer::make_dc();
 }
