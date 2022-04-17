@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use serde_yaml::to_string;
 
@@ -5,7 +7,7 @@ use serde_yaml::to_string;
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct DockerCompose {
     pub version: String,
-    pub services: Vec<DockerComposeService>,
+    pub services: HashMap<String, DockerComposeService>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

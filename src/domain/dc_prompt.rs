@@ -1,4 +1,5 @@
 use regex::Regex;
+use std::collections::HashMap;
 use std::process::Command;
 
 use super::dc::DockerCompose;
@@ -10,7 +11,13 @@ pub trait DockerComposePrompt: HavePrompt {
     fn make_dc() -> DockerCompose {
         let version = Self::confirmation_str(Self::input_dc_version);
         let service_number = Self::input_container_number();
-        let services = (0..service_number).map(|x| Self::make_service()).collect();
+        let services_list: Vec<DockerComposeService> = (0..service_number).map(|_x| Self::make_service()).collect();
+
+        let mut services = HashMap::new();
+        
+        for x in services_list {
+            services.insert(x.name.clone(), x);
+        }
 
         DockerCompose {
             version: version,
