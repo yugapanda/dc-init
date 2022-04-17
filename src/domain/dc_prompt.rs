@@ -19,20 +19,20 @@ pub trait DockerComposePrompt: HavePrompt {
     }
 
     fn make_service() -> DockerComposeService {
-        let selected_image = Self::search_image();
-        let container_name = Self::confirmation_str(Self::container_name);
+        let image = Self::search_image();
+        let name = Self::confirmation_str(Self::container_name);
         let restart = Self::confirmation_str(Self::select_restart);
         let privileged = Self::confirmation_str(Self::select_privileged);
         let command = Self::confirmation_opt_str(Self::input_command);
         let tty = Self::confirmation_str(Self::select_tty);
 
         DockerComposeService {
-            image: selected_image,
-            name: Some(container_name),
+            image,
+            name,
             restart: Some(restart),
             privileged: Some(privileged),
             tty: Some(tty),
-            command: command,
+            command,
             ports: vec![],
             volumes: vec![],
             environment: vec![],

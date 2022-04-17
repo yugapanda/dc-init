@@ -10,5 +10,6 @@ fn main() {
 }
 
 fn prompt() {
-    Composer::make_dc();
+    let dc = Composer::make_dc();
+    println!("{}", dc.to_yaml());
 }
