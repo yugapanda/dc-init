@@ -29,9 +29,9 @@ pub trait DockerComposePrompt: HavePrompt {
         let image = Self::search_image();
         let name = Self::confirmation_str(Self::container_name);
         let restart = Self::confirmation_str(Self::select_restart);
-        let privileged = Self::confirmation_str(Self::select_privileged);
+        let privileged = Self::confirmation_opt_bool(Self::select_privileged);
         let command = Self::confirmation_opt_str(Self::input_command);
-        let tty = Self::confirmation_str(Self::select_tty);
+        let tty = Self::confirmation_opt_bool(Self::select_tty);
 
         DockerComposeService {
             image,
@@ -40,10 +40,10 @@ pub trait DockerComposePrompt: HavePrompt {
             privileged: Some(privileged),
             tty: Some(tty),
             command,
-            ports: vec![],
-            volumes: vec![],
-            environment: vec![],
-            network: vec![],
+            ports: None,
+            volumes:  None,
+            environment:  None,
+            network:  None,
         }
     }
 
@@ -101,6 +101,22 @@ pub trait DockerComposePrompt: HavePrompt {
         }
     }
 
+    fn confirmation_opt_bool(f: impl Fn() -> bool) -> bool {
+        let input = f();
+        let ok = Self::Prompt::select_one(
+            format!("input is {:?} OK ?", input).as_str(),
+            vec!["Ok".to_string(), "Retry".to_string()],
+            "select one",
+        );
+
+        if ok == "Ok" {
+            input
+        } else {
+            Self::confirmation_opt_bool(f)
+        }
+    }
+
+
     fn container_name() -> String {
         Self::Prompt::input_with_retry("Input Container Name", "Please Input Container Name")
     }
@@ -109,13 +125,13 @@ pub trait DockerComposePrompt: HavePrompt {
         Self::Prompt::select_one("Select Base Image", images, "Please Select Base Image")
     }
 
-    fn select_privileged() -> String {
+    fn select_privileged() -> bool {
         let is = Self::Prompt::select_one(
             "Need privilege ?",
             vec!["true".to_string(), "false".to_string()],
             "Please Select Base Image",
         );
-        is
+        is == "true"
     }
 
     fn input_command() -> Option<String> {
@@ -129,13 +145,13 @@ pub trait DockerComposePrompt: HavePrompt {
         }
     }
 
-    fn select_tty() -> String {
+    fn select_tty() -> bool {
         let is = Self::Prompt::select_one(
             "Need tty ?",
             vec!["true".to_string(), "false".to_string()],
             "Please Select tty",
         );
-        is
+        is == "true"
     }
 
     fn select_restart() -> String {
